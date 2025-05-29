@@ -1,12 +1,9 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import HomeButton from "../../components/HomeButton";
-import { Stack, IconButton } from "@mui/material";
-import HomeIcon from '@mui/icons-material/Home';
+
+import HomeButton from "../../components/UI/HomeButton";
+import { Stack } from "@mui/material";
 import useStyles from "../../utils/styles/styles";
 
 export default function OnePageComponentSmall(props) {
-    const navigate = useNavigate();
     return (
         <Stack
             direction={'column'}

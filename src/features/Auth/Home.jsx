@@ -1,5 +1,6 @@
 import cro3 from '../../assets/cro3.png'
 import Axios from "axios";
+import ShowLogs from '../../components/UI/ShowLogs';
 import "../../utils/styles/stylesCSS.css"
 import '../../App.css'
 
@@ -10,7 +11,7 @@ export default function Home(props) {
       withCredentials: true,
     })
       .then(() => {
-        window.location.href = "/";
+        window.location.href = "/login";
         window.reload();
       })
       .catch((err) => {
@@ -30,7 +31,7 @@ export default function Home(props) {
         </p>
         <p>
           Bem vindo, {props.user.userPG} {props.user.nameOfTheUser}
-
+<ShowLogs docId = {props.user._id} />
         </p>
       </header>
     </div>

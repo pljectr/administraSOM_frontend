@@ -32,7 +32,7 @@ export default function Root() {
       <header className="App-header">
         <Matriz>
           <Routes>
-            <Route path="/" exact element={auth.status ? <Home user={auth.user} /> : <Login />} />
+           {auth.status && <Route path="/" exact element={<Home user={auth.user} /> }/>    } 
             <Route path="/successTest" exact element={<Home user={auth.user} />} />
             {/*  {auth.status && <Route path="/cadastros/empresas/:thenewobject" exact element={<Empresas user={auth.user} />} />} */}
             <Route path="/login" exact element={<Login />} />

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 import OnePageComponentSmall from "../Matriz/OnePageComponentSmall";
-import WaitAction from "../../components/WaitAction";
+import WaitAction from "../../components/UI/WaitAction";
 
 //Styling imports
 
