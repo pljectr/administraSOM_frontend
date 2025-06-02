@@ -1,10 +1,12 @@
-import React from "react";
+
 import { CircularProgress } from "@mui/material";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import ErrorIcon from "@mui/icons-material/Error";
-import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
-import { Container, FileInfo, Preview } from "./styles";
+
+import { Container, FileInfo, ImagePreview } from "./styles";
 import { Typography } from "@mui/material";
+import pdfImg from '../../../../../assets/pdfs.png'
+import imgImg from '../../../../../assets/images.png'
 
 const FileList = ({ files, onDelete, viewOnly }) => (
   <Container>
@@ -12,16 +14,11 @@ const FileList = ({ files, onDelete, viewOnly }) => (
       <>
         <li key={uploadedFile.id}>
           <FileInfo>
-            {uploadedFile.name.slice(uploadedFile.name.length - 3) !== `pdf` ? (
-              <Preview
-                src={uploadedFile.preview || uploadedFile.url} />
+            {uploadedFile.name.slice(uploadedFile.name.length - 3) == `pdf` ? (
+              <ImagePreview image={pdfImg} />
+
             ) : (
-              <lord-icon
-                src="https://cdn.lordicon.com/ckatldkn.json"
-                trigger="loop"
-                delay="1000"
-                style={{ width: '50px', height: '50px' }}>
-              </lord-icon>
+              <ImagePreview image={imgImg} />
             )}
 
             <div>

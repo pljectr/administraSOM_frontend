@@ -16,6 +16,17 @@ export const Container = styled.ul`
   }
 `;
 
+export const ImagePreview = styled.div`
+  width: 50px;
+  height: 50px;
+  margin: 5px;
+  background-image: url(${props => props.image});
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 4px;
+`;
+
 export const FileInfo = styled.div`
   display: flex;
   align-items: center;
