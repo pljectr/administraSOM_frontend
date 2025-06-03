@@ -4,6 +4,8 @@ import ShowLogs from '../../components/UI/ShowLogs';
 import UploadFiles from '../../components/Features/Upload/uploadFiles';
 import "../../utils/styles/stylesCSS.css"
 import '../../App.css'
+import TopBar from  '../../components/UI/TopBar';
+import Footer from '../../components/UI/Footer';
 
 export default function Home(props) {
   const handleFileSaved = (file) => {
@@ -14,29 +16,13 @@ export default function Home(props) {
     console.log("Arquivo deletado:", id);
   };
 
-  const handleLogout = () => {
-    Axios.get(`${process.env.REACT_APP_BACK_SERVER_LOCATION}/api/users/logout`, {
-      withCredentials: true,
-    })
-      .then(() => {
-        window.location.href = "/login";
-        window.reload();
-      })
-      .catch((err) => {
-        console.error("Erro ao deslogar:", err);
-      });
-  };
+
   return (
     <div className="App">
-      <button className="logout-button" onClick={handleLogout}>
-        Logout
-      </button>
-      <header className="App-header">
-        <img src={cro3} className="App-logo" alt="logo" />
-        <p>
-          administraSOM
+      <TopBar/>
 
-        </p>
+      <header className="App-header">
+
         <hr />
         <p>
           Bem vindo, {props.user.userPG} {props.user.nameOfTheUser}
@@ -53,6 +39,7 @@ export default function Home(props) {
           <ShowLogs docId={props.user._id} />
         </p>
       </header>
+      <Footer />
     </div>
   );
 }
