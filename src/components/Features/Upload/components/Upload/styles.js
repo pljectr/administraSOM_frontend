@@ -19,7 +19,6 @@ export const DropContainer = styled.div.attrs({
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  background-image: url(/images/purpleBg.jpg);
   transition: height 0.2s ease;
 
   ${props => props.isDragActive && dragActive};
@@ -27,7 +26,7 @@ export const DropContainer = styled.div.attrs({
 `;
 
 const messageColors = {
-  default: "#7F55B1",
+  default: "grey",
   error: "#e57878",
   success: "#78e5d5"
 };

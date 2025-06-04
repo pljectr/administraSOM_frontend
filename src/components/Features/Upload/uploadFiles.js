@@ -4,6 +4,7 @@ import filesize from "filesize";
 
 import api from "./services/api";
 import { Container, Content } from "./styles";
+import { Button, Typography } from "@mui/material"; // use it to any text 
 
 import Upload from "./components/Upload";
 import FileList from "./components/FileList";
@@ -118,6 +119,13 @@ class UploadFiles extends Component {
         return (
             <Container>
                 <Content>
+                    <Typography
+                        gutterBottom
+                        variant="h5"
+                        style={{color: "CaptionText"}}
+                    >
+                   Anexos
+                    </Typography>
                     {!this.props.viewOnly && <Upload onUpload={this.handleUpload} />}
                     {!!uploadedFiles.length && (
                         <FileList

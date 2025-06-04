@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import TableComp from "../Features/Table/TableComp";
 import Axios from "axios";
 
 function ShowLogs(props) {
@@ -19,7 +19,12 @@ function ShowLogs(props) {
     })
       .then((res) => {
         if (!res.data.erro) {
-          setLogs(res.data.atividades);
+          setLogs(
+            res.data.atividades.map(log => ({
+              ...log,
+              timestamp: new Date(log.timestamp).toLocaleString()
+            }))
+          );
         } else {
           setErro(res.data.mensagem || "Erro ao buscar logs");
         }
@@ -37,7 +42,6 @@ function ShowLogs(props) {
 
   return (
     <div style={{ padding: "1rem" }}>
-      <h2>Logs do Documento: {docId}</h2>
 
       {loading && <p>Carregando logs...</p>}
 
@@ -45,18 +49,22 @@ function ShowLogs(props) {
 
       {!loading && !erro && logs.length === 0 && <p>Nenhum log encontrado.</p>}
 
-      <ul>
-        {logs.map((log) => (
-          <li key={log._id} style={{ marginBottom: "1rem" }}>
-            <strong>{log.action}</strong> - {log.description}
-            <br />
-            <small>
-              {new Date(log.timestamp).toLocaleString()} | IP: {log.ip}
-            </small>
-            <hr />
-          </li>
-        ))}
-      </ul>
+
+      {logs.length > 0  && <TableComp
+        items={logs}
+        tableHead={["Ação", "Descrição", "Horário", "IP"]}
+        objkeys={{
+          action: '',
+          description: '',
+          timestamp: '',
+          ip: ''
+        }}
+        WhenClicked={() => { }}
+       // addItem={() => { }}
+        whatToSearch={props.title}
+      />}
+
+
     </div>
   );
 }
