@@ -9,6 +9,18 @@ import { Button, Typography } from "@mui/material"; // use it to any text
 import Upload from "./components/Upload";
 import FileList from "./components/FileList";
 
+
+/**
+ * Componente UploadFiles
+ *
+ * Props:
+ * @param {string} docId - ID do documento ou pasta para associar os arquivos enviados.
+ * @param {function} [savedFile] - Callback chamado após um arquivo ser salvo no backend. Recebe o objeto do arquivo salvo.
+ * @param {function} [deletado] - Callback chamado após a exclusão de um arquivo. Recebe o ID do arquivo deletado.
+ * @param {boolean} [viewOnly=false] - Se true, desabilita a interface de upload, mostrando somente a lista de arquivos.
+ * @param {boolean} [doNotDelete=false] - Se true, impede a exclusão dos arquivos na lista exibida.
+ */
+
 class UploadFiles extends Component {
     state = {
         uploadedFiles: [],

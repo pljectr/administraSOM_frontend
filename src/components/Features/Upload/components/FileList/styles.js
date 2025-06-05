@@ -22,6 +22,7 @@ export const ImagePreview = styled.div`
   margin: 5px;
   background-image: url(${props => props.image});
   background-size: cover;
+  opacity: 0.8;
   background-position: center;
   background-repeat: no-repeat;
   border-radius: 4px;

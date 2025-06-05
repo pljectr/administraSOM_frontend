@@ -1,23 +1,45 @@
 .footer {
-  background-color: rgba(249, 250, 251, 0.8); /* cinza claro opaco */
-  color: #6b7280; /* cinza médio */
+  background-color: rgba(249, 250, 251, 0.8);
+  color: #6b7280;
   font-size: 12px;
   padding: 20px 12px;
   margin-top: 48px;
   border-top: 1px solid #e5e7eb;
   border-radius: 12px 12px 0 0;
-  backdrop-filter: blur(2px); /* para dar leveza */
+  backdrop-filter: blur(2px);
 }
 
 .footer-container {
-  max-width: 800px;
+  display: flex;
+  align-items: center; /* centraliza verticalmente */
+  justify-content: space-between;
+  max-width: 1000px;
   margin: 0 auto;
-  line-height: 1.5;
+  gap: 24px;
+}
+
+.footer-logo {
+  flex: 0 0 30%; /* ocupa exatamente 30% */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.footer-img {
+  max-width: 100%;
+  max-height: 120px;
+  object-fit: contain;
+}
+
+.footer-text {
+  flex: 1;
+  line-height: 1.6;
 }
 
 .footer-copy {
   margin-top: 10px;
   font-size: 12px;
-  color: #9ca3af; /* cinza mais claro */
+  color: #9ca3af;
   text-align: center;
 }

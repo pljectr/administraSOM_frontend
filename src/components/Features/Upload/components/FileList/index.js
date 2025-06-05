@@ -7,6 +7,7 @@ import { Container, FileInfo, ImagePreview } from "./styles";
 import { Typography } from "@mui/material";
 import pdfImg from '../../../../../assets/pdfs.png'
 import imgImg from '../../../../../assets/images.png'
+import zipImg from '../../../../../assets/zips.png'
 
 const FileList = ({ files, onDelete, viewOnly }) => (
   <Container>
@@ -14,12 +15,11 @@ const FileList = ({ files, onDelete, viewOnly }) => (
       <>
         <li key={uploadedFile.id}>
           <FileInfo>
-            {uploadedFile.name.slice(uploadedFile.name.length - 3) == `pdf` ? (
-              <ImagePreview image={pdfImg} />
-
-            ) : (
-              <ImagePreview image={imgImg} />
-            )}
+            {
+              uploadedFile.name.slice(uploadedFile.name.length - 3) == `pdf` ? (<ImagePreview image={pdfImg} />)
+                : uploadedFile.name.slice(uploadedFile.name.length - 3) == 'zip' ? (<ImagePreview image={zipImg} />)
+                  : (<ImagePreview image={imgImg} />)
+            }
 
             <div>
               <Typography variant="subtitle1">{uploadedFile.name}</Typography>

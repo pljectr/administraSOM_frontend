@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import Axios from "axios";
 import Skeleton from '@mui/material/Skeleton';
 
+/* 
+props.facilityID: Id de um quartel
+ */
+
 export default function GetFacilities(props) {
     const [data, setData] = useState(false); //Usuário Logado e detalhes do projeto
     React.useEffect(() => {

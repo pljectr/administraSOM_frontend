@@ -13,7 +13,7 @@ export default function AllFacilitiesMap(props) {
     }
 
     return <div>
-        <GetFacilities>
+        <GetFacilities facilityID={props.facilityID}>
             <LocalMap   />
         </GetFacilities>
     </div>

@@ -39,9 +39,59 @@ import FormControl from "@mui/material/FormControl";
 
 //MUI Icons
 import AddIcon from "@mui/icons-material/Add";
-import FilterListIcon from "@mui/icons-material/FilterList";
+
 import SearchIcon from "@mui/icons-material/Search";
 
+
+/* 
+PROPS
+-------
+
+items
+Array
+Lista de objetos que serão renderizados na tabela.
+
+objkeys
+Object
+Objeto com as chaves representativas de cada coluna.
+
+tableHead
+Array
+Lista com os nomes visíveis das colunas da tabela.
+
+addItem
+Function
+Função chamada ao clicar no botão “Cadastrar”.
+
+whatToSearch
+String
+Título que aparece acima da barra de pesquisa.
+
+showSearchBar
+String
+Define se a barra de busca é exibida ("donotshow" esconde).
+
+WhenClicked
+Function
+Função chamada ao clicar em uma linha da tabela. Recebe o _id do item.
+
+exportFilteredRows
+Function
+Callback para exportar os dados filtrados da busca.
+exportRequest
+
+Function
+Callback para exportar o valor digitado na busca.
+
+preSelected
+Array
+Permite definir um conjunto de linhas pré-filtradas.
+
+children
+ReactNode
+Conteúdo adicional que será exibido abaixo da barra de busca.
+
+*/
 export default function TableComp(props) {
 
   // Hooks
@@ -58,13 +108,9 @@ export default function TableComp(props) {
   ); //pega os dados em forma de JSON para renderizar na tabela
   const keyNames = Object.keys(props.objkeys); //Quais as propriedades do objeto que eu quero mostrar (JSON format)
 
-  const [fcoft, setFcoft] = useState(false); //Fist-Click-On-Fund-Table
-  const [openSelectFilter, setOpenSelectFilter] = useState(false);
 
-  const [addNewItemMsg, setAddNewItemMsg] = useState("");
   const [searched, setSearched] = useState("");
 
-  const [selectedRow, setSelectedRow] = useState(null);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [columnToSearch, setColumnToSearch] = useState(0);
@@ -279,18 +325,12 @@ export default function TableComp(props) {
     selectedValue: PropTypes.string.isRequired,
   };
 
-  //---
-
-  const handleCloseFilter = (value) => {
-    setOpenSelectFilter(false);
-    setColumnToSearch(value);
-  };
 
   //---
 
   return (
     <>
-      <Paper elevation={0} sx={{ width: "100%", overflow: "hidden" }}>
+      <Paper elevation={0} sx={{ width: "100%", minWidth:"60vw", transition:"all 1s ease",overflow: "hidden" }}>
         {props.whatToSearch && (
           <Typography
             gutterBottom

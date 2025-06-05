@@ -31,10 +31,13 @@ export default function HomeTest(props) {
         <hr />
         <div style={{ padding: "1%" }}>
           <h2>Mapa do sistema</h2>
-          <AllFacilitiesMap docId={props.user._id} />
-         
+          <AllFacilitiesMap facilityID={
+            false
+              ? '68408b323b33d92ff579a806' //id da EASA
+              : null} docId={props.user._id} />
+
         </div>
-         <hr />
+        <hr />
         <UploadFiles
 
           docId={props.user._id}
@@ -44,12 +47,12 @@ export default function HomeTest(props) {
         />
         <hr />
         <ShowLogs title={`Logs do usuário ${props.user.username}`} docId={props.user._id} />
-  <hr />
+        <hr />
 
-  <KanbanCard/>
-    <hr />
+        <KanbanCard />
+        <hr />
       </header>
-      
+
       <Footer />
     </div>
   );

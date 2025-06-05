@@ -23,7 +23,8 @@ export default class Upload extends Component {
     return (
       <Dropzone accept={{
         'application/pdf': ['.pdf'],
-        'image/*': ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp']
+        'image/*': ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp'],
+        'application/zip': ['.zip']
       }} onDropAccepted={onUpload}>
         {({ getRootProps, getInputProps, isDragActive, isDragReject }) => (
           <DropContainer
