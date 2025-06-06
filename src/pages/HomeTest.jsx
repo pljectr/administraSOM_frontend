@@ -1,12 +1,11 @@
 
-import ShowLogs from '../../components/UI/ShowLogs';
-import Mapa from '../../components/Features/Maps/Mapa';
-import AllFacilitiesMap from '../../components/Features/Maps/AllFacilitiesMap';
-import UploadFiles from '../../components/Features/Upload/uploadFiles';
-import "../../utils/styles/stylesCSS.css"
-import TopBar from '../../components/UI/TopBar';
-import Footer from '../../components/UI/Footer';
-import KanbanCard from '../../components/Features/Cards/KanbanCard';
+import ShowLogs from '../components/UI/ShowLogs';
+import AllFacilitiesMap from '../components/Features/Maps/AllFacilitiesMap';
+import UploadFiles from '../components/Features/Upload/uploadFiles';
+import "../utils/styles/stylesCSS.css"
+import TopBar from '../components/UI/TopBar';
+import Footer from '../components/UI/Footer';
+import KanbanCard from '../components/Features/Cards/KanbanCard';
 
 export default function HomeTest(props) {
   const handleFileSaved = (file) => {
@@ -40,7 +39,8 @@ export default function HomeTest(props) {
         <hr />
         <UploadFiles
 
-          docId={props.user._id}
+          projectId={props.user._id}
+          cardId={props.user._id}
           savedFile={handleFileSaved}
           deletado={handleFileDeleted}
           doNotDelete={false} // ou true se quiser modo somente leitura

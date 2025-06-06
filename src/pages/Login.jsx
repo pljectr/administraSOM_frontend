@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Axios from "axios";
-import WaitAction from "../../components/UI/WaitAction";
+import WaitAction from "../components/UI/WaitAction";
 
 // MUI imports
 import {
@@ -22,7 +22,7 @@ import IconButton from "@mui/material/IconButton";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 // Imagem
-import logoIcon from '../../assets/admsom.png'
+import logoIcon from '../assets/admsom.png'
 
 export default function Login() {
   const navigate = useNavigate();

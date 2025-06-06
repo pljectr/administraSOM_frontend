@@ -35,11 +35,8 @@ const FileList = ({ files, onDelete, viewOnly }) => (
           </FileInfo>
 
           <div>
-            {!uploadedFile.uploaded && !uploadedFile.error && (
-              <CircularProgress sx={{ color: "rgb(104, 134, 197)" }} width={12} />
-            )}
 
-            {uploadedFile.url && (
+            {uploadedFile.url ? (
               <a
                 href={uploadedFile.url}
                 target="_blank"
@@ -51,7 +48,9 @@ const FileList = ({ files, onDelete, viewOnly }) => (
                   color="#222"
                 />
               </a>
-            )}
+            ) : (!uploadedFile.uploaded && !uploadedFile.error && (
+              <CircularProgress sx={{ color: "rgb(104, 134, 197)" }} width={12} />
+            ))}
 
             {/* {uploadedFile.uploaded && (
             <CheckCircleIcon size={24} sx={{ color: "#78e5d5" }} />

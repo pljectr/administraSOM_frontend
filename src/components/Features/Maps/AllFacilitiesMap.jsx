@@ -7,7 +7,8 @@ export default function AllFacilitiesMap(props) {
         return <Mapa points={props.data.map((e, i) =>
         ({
             nome: e.nickname,
-            coords: [e.location.latitude, e.location.longitude]
+            coords: [e.location.latitude, e.location.longitude],
+            address: e.geoAdress
         })
         )} />
     }

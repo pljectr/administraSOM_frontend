@@ -4,9 +4,9 @@ import './utils/styles/textStyles.css';
 import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Axios from "axios";
-import HomeTest from "./pages/Auth/HomeTest";
-import Matriz from './pages/Matriz/Matriz'
-import Login from "./pages/Auth/Login";
+import HomeTest from "./pages/HomeTest";
+import Matriz from './pages/Matriz'
+import Login from "./pages/Login";
 export default function App() {
   const [auth, setAuth] = useState({
     status: false,

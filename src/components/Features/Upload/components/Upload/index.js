@@ -32,7 +32,7 @@ export default class Upload extends Component {
             isDragActive={isDragActive}
             isDragReject={isDragReject}
           >
-            <input {...getInputProps()} />
+            <input {...getInputProps()} multiple={false} />
             {this.renderDragMessage(isDragActive, isDragReject)}
           </DropContainer>
         )}

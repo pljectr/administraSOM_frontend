@@ -28,7 +28,7 @@ class UploadFiles extends Component {
 
     async componentDidMount() {
         const response = await api.get(
-            `/api/uploads/${this.props.docId}`
+            `/api/uploads/${this.props.projectId}/${this.props.cardId}`
         );
 
         this.setState({
@@ -79,10 +79,12 @@ class UploadFiles extends Component {
         const data = new FormData();
 
         data.append("file", uploadedFile.file, uploadedFile.name);
-        data.append("objectId", this.props.docId); // pasta a que o arquivo pertence
+        data.append("projectId", this.props.projectId); // pasta a que o arquivo pertence
+        data.append("cardId", this.props.cardId); // pasta a que o arquivo pertence
+
 
         api
-            .post(`/api/uploads/${this.props.docId}`, data, {
+            .post(`/api/uploads/${this.props.projectId}/${this.props.cardId}`, data, {
                 onUploadProgress: (e) => {
                     const progress = parseInt(Math.round((e.loaded * 100) / e.total));
 
@@ -93,6 +95,7 @@ class UploadFiles extends Component {
             })
             .then((response) => {
                 if (response.data) {
+
                     this.props.savedFile(response.data);
                     this.updateFile(uploadedFile.id, {
                         uploaded: true,
@@ -102,7 +105,8 @@ class UploadFiles extends Component {
                 }
 
             })
-            .catch(() => {
+            .catch((error) => {
+
                 this.updateFile(uploadedFile.id, {
                     error: true,
                 });
@@ -134,9 +138,9 @@ class UploadFiles extends Component {
                     <Typography
                         gutterBottom
                         variant="h5"
-                        style={{color: "CaptionText"}}
+                        style={{ color: "CaptionText" }}
                     >
-                   Anexos
+                        Anexos
                     </Typography>
                     {!this.props.viewOnly && <Upload onUpload={this.handleUpload} />}
                     {!!uploadedFiles.length && (
