@@ -7,6 +7,7 @@ import Axios from "axios";
 import HomeTest from "./pages/HomeTest";
 import Matriz from './pages/Matriz'
 import Login from "./pages/Login";
+import NewContractForm from './pages/NewContractForm';
 export default function App() {
   const [auth, setAuth] = useState({
     status: false,
@@ -37,6 +38,7 @@ export default function App() {
           <Routes>
            {auth.status && <Route path="/" exact element={<HomeTest user={auth.user} /> }/>    } 
             <Route path="/successTest" exact element={<HomeTest user={auth.user} />} />
+            <Route path="/contracts/new" element={<NewContractForm />} />
             {/*  {auth.status && <Route path="/cadastros/empresas/:thenewobject" exact element={<Empresas user={auth.user} />} />} */}
             <Route path="/login" exact element={<Login />} />
 

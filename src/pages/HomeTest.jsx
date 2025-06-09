@@ -1,13 +1,23 @@
 
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom'
 import ShowLogs from '../components/UI/ShowLogs';
 import AllFacilitiesMap from '../components/Features/Maps/AllFacilitiesMap';
 import UploadFiles from '../components/Features/Upload/uploadFiles';
 import "../utils/styles/stylesCSS.css"
+import TableComp from '../components/Features/Table/TableComp'
 import TopBar from '../components/UI/TopBar';
 import Footer from '../components/UI/Footer';
 import KanbanCard from '../components/Features/Cards/KanbanCard';
-
+import api from '../services/api';
 export default function HomeTest(props) {
+
+  const [contracts, setContracts] = useState([]);
+  const navigate = useNavigate();
+  const handleAdd = () => {
+    navigate('/contracts/new');
+  };
+
   const handleFileSaved = (file) => {
     console.log("Arquivo salvo:", file);
   };
@@ -15,6 +25,12 @@ export default function HomeTest(props) {
   const handleFileDeleted = (id) => {
     console.log("Arquivo deletado:", id);
   };
+
+  useEffect(() => {
+    api.get('/api/contracts')
+      .then(res => setContracts(res.data))
+      .catch(err => console.error('Erro fetching contracts:', err));
+  }, []);
 
 
   return (
@@ -33,9 +49,18 @@ export default function HomeTest(props) {
           <AllFacilitiesMap facilityID={
             false
               ? '68408b323b33d92ff579a806' //id da EASA
-              : null} docId={props.user._id} />
+              : null} />
 
         </div>
+        <hr />
+        {contracts.length >0 && <TableComp
+          items={contracts}
+          objkeys={{ contractNumber: '', name: '', value: '', status: '' }}
+          tableHead={['Número', 'Nome', 'Valor', 'Status']}
+          addItem={handleAdd}
+          whatToSearch="Contratos"
+          WhenClicked={(id) => navigate(`/${id}`)}
+        />} 
         <hr />
         <UploadFiles
 
