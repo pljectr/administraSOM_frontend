@@ -15,3 +15,72 @@
 .logout-button:hover {
   background-color: #b91c1c;
 }
+/* src/styles/stylesCss.css */
+
+/* Estilos gerais para o container principal do formulário */
+.form-container {
+    padding: 20px;
+    background-color: #f5f5f5; /* Exemplo: fundo levemente cinza */
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para o Paper principal que envolve todo o formulário */
+.main-form-paper {
+    padding: 30px;
+    border-radius: 12px;
+    background-color: #ffffff;
+}
+
+/* Estilos para o Grid que contém a seção do mapa e informações gerais */
+.main-sections-grid {
+    margin-bottom: 30px;
+}
+
+/* Estilos para a seção específica do mapa (Grid item) */
+.map-section {
+    /* Flexbox para o conteúdo dentro do card do mapa */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Estilos para a seção de informações gerais (Grid item) */
+.general-info-section {
+    /* Pode adicionar padding ou margem se precisar de espaçamento extra */
+}
+
+/* Estilos para o Paper que envolve o mapa */
+.map-card {
+    border-radius: 8px;
+    overflow: hidden; /* Garante que o mapa não transborde */
+}
+
+/* Estilos para o Paper que envolve as informações gerais */
+.general-info-card {
+    border-radius: 8px;
+}
+
+/* Estilos para as seções de informações financeiras, cronograma e empresa/fiscal */
+/* Note que form-card será usado para aplicar estilos comuns a estes Papers */
+.financial-info-section {
+    margin-bottom: 30px;
+}
+
+.schedule-section {
+    margin-bottom: 30px;
+}
+
+.company-fiscal-section {
+    margin-bottom: 30px;
+}
+
+/* Estilos para a área dos botões de ação do formulário */
+.form-actions {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #eee; /* Exemplo: linha separadora */
+    justify-content: flex-end; /* Alinha os botões à direita */
+    gap: 15px; /* Espaçamento entre os botões */
+}
+
+/* Mais estilos gerais, como para espaçamentos, sombras, bordas, etc. */

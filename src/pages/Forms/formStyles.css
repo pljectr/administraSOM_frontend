@@ -1,0 +1,52 @@
+/* src/styles/formStyles.css */
+
+/* Estilos comuns para os Cards (Papers) dentro do formulário que agrupam campos */
+.form-card {
+    padding: 25px;
+    border-radius: 8px;
+    background-color: #fefefe; /* Exemplo: fundo quase branco */
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.05); /* Exemplo: sombra sutil */
+}
+
+/* Estilos para a área onde o mapa é renderizado dentro do card */
+.map-canvas {
+    height: 350px; /* Altura fixa para o mapa */
+    width: 100%;
+    border-radius: 4px;
+    overflow: hidden;
+    background-color: #e0e0e0; /* Fundo enquanto o mapa carrega */
+    display: flex; /* Para centralizar o conteúdo, como o loading */
+    align-items: center;
+    justify-content: center;
+}
+
+/* Estilos para o componente Autocomplete de seleção de OM */
+.om-selection {
+    margin-top: 15px;
+}
+
+/* Estilos para cada linha de item do cronograma */
+.schedule-item-row {
+    border: 1px solid #f0f0f0; /* Exemplo: borda suave para cada linha */
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #fcfcfc;
+    align-items: center; /* Alinha os itens da linha verticalmente */
+}
+
+/* Estilos para os campos de formulário (TextField, Select, etc.) */
+/* Note: Muitos estilos de TextField e Select são gerenciados pelo Material-UI.
+   Use estas classes para overrides específicos ou para adicionar bordas/sombras customizadas. */
+.MuiTextField-root,
+.MuiFormControl-root {
+    margin-bottom: 15px; /* Exemplo: espaçamento entre campos */
+}
+
+/* Estilos para os botões do formulário */
+.MuiButton-root {
+    text-transform: none; /* Mantém o texto normal, sem uppercase */
+    font-weight: 500;
+}
+
+/* Mais estilos para elementos de formulário, como checkboxes, radio buttons, etc. */

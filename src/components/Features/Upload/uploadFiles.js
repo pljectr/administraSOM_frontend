@@ -9,16 +9,20 @@ import { Button, Typography } from "@mui/material"; // use it to any text
 import Upload from "./components/Upload";
 import FileList from "./components/FileList";
 
+// src/components/UploadFiles/index.js (ou onde quer que esteja seu componente principal de upload)
+
 
 /**
  * Componente UploadFiles
  *
  * Props:
- * @param {string} docId - ID do documento ou pasta para associar os arquivos enviados.
+ * @param {string} contractId - ID do contrato para associar os arquivos enviados. (Anteriormente docId/projectId)
+ * @param {string} cardId - ID do card para associar os arquivos enviados.
+ * @param {string} itemId - ID do item para associar os arquivos enviados. (NOVO, opcional, para medições etc.)
  * @param {function} [savedFile] - Callback chamado após um arquivo ser salvo no backend. Recebe o objeto do arquivo salvo.
- * @param {function} [deletado] - Callback chamado após a exclusão de um arquivo. Recebe o ID do arquivo deletado.
+ * @param {function} [deletado] - Callback chamado após a exclusão lógica de um arquivo. Recebe o ID do arquivo deletado.
  * @param {boolean} [viewOnly=false] - Se true, desabilita a interface de upload, mostrando somente a lista de arquivos.
- * @param {boolean} [doNotDelete=false] - Se true, impede a exclusão dos arquivos na lista exibida.
+ * @param {boolean} [doNotDelete=false] - Se true, impede a exclusão lógica dos arquivos na lista exibida (botão de lixeira).
  */
 
 class UploadFiles extends Component {
@@ -27,9 +31,15 @@ class UploadFiles extends Component {
     };
 
     async componentDidMount() {
-        const response = await api.get(
-            `/api/uploads/${this.props.projectId}/${this.props.cardId}`
-        );
+        // --- CORREÇÃO: Manter a rota original com parâmetros de URL ---
+        // O backend espera contractId e cardId como parâmetros na URL.
+        const response = this.props.trash
+            ? await api.get(
+                `/api/uploads/trash/${this.props.contractId}/${this.props.cardId}`
+            )
+            : await api.get(
+                `/api/uploads/${this.props.contractId}/${this.props.cardId}`
+            );
 
         this.setState({
             uploadedFiles: response.data.map((file) => ({
@@ -46,16 +56,16 @@ class UploadFiles extends Component {
     handleUpload = (files) => {
         const uploadedFiles = files.map((file) => ({
             file,
-            id: uniqueId(),
+            id: uniqueId(), // ID temporário para o frontend
             name: file.name,
-            /*       classId: this.props.classId,
-                  subjectId: this.props.subjectId, */
             readableSize: filesize(file.size),
             preview: URL.createObjectURL(file),
             progress: 0,
             uploaded: false,
             error: false,
             url: null,
+            // Adicione a descrição aqui se você tiver um campo de input para ela no Upload.
+            // description: 'Minha descrição do arquivo',
         }));
 
         this.setState({
@@ -78,49 +88,60 @@ class UploadFiles extends Component {
     processUpload = (uploadedFile) => {
         const data = new FormData();
 
-        data.append("file", uploadedFile.file, uploadedFile.name);
-        data.append("projectId", this.props.projectId); // pasta a que o arquivo pertence
-        data.append("cardId", this.props.cardId); // pasta a que o arquivo pertence
+        data.append("file", uploadedFile.file); // O nome do campo deve ser 'file' para o Multer
+        data.append("contractId", this.props.contractId);
+        data.append("cardId", this.props.cardId);
+        // --- ALTERAÇÃO 2: Adicionar itemId ao FormData ---
+        // itemId é opcional, envie apenas se existir.
+        if (this.props.itemId) {
+            data.append("itemId", this.props.itemId);
+        }
+        // --- ALTERAÇÃO 3: Adicionar descrição ao FormData (se houver) ---
+        // Se você tiver um campo de descrição no frontend para o upload, adicione-o aqui.
+        if (uploadedFile.description) {
+            data.append("description", uploadedFile.description);
+        }
 
-
+        // --- ALTERAÇÃO 4: Mudar a rota para upload de arquivo ---
+        // O backend agora espera POST para /api/uploads, com IDs no body.
         api
-            .post(`/api/uploads/${this.props.projectId}/${this.props.cardId}`, data, {
+            .post(`/api/uploads`, data, { // Rota mais genérica para upload
                 onUploadProgress: (e) => {
                     const progress = parseInt(Math.round((e.loaded * 100) / e.total));
-
-                    this.updateFile(uploadedFile.id, {
-                        progress,
-                    });
+                    this.updateFile(uploadedFile.id, { progress });
                 },
             })
             .then((response) => {
                 if (response.data) {
-
-                    this.props.savedFile(response.data);
+                    this.props.savedFile(response.data); // Chame o callback com o arquivo salvo do backend
                     this.updateFile(uploadedFile.id, {
                         uploaded: true,
-                        id: response.data._id,
-                        url: response.data.url,
+                        id: response.data._id, // O ID do arquivo no MongoDB
+                        url: response.data.url, // A URL final do arquivo
                     });
                 }
-
             })
             .catch((error) => {
-
-                this.updateFile(uploadedFile.id, {
-                    error: true,
-                });
+                console.error("Erro ao fazer upload do arquivo:", error);
+                this.updateFile(uploadedFile.id, { error: true });
+                // TODO: Adicionar feedback visual para o usuário sobre o erro.
             });
     };
 
     handleDelete = async (id) => {
-        this.props.deletado(id);
-        await api.delete(`/api/uploads/${id}`);
+        // --- ALTERAÇÃO 5: A rota DELETE agora faz um "soft delete" (move para a lixeira) ---
+        // A interface ainda "deleta" o arquivo da lista visível.
+        try {
+            await api.delete(`/api/uploads/${id}`);
+            this.props.deletado(id); // Informe o componente pai sobre a deleção lógica
 
-
-        this.setState({
-            uploadedFiles: this.state.uploadedFiles.filter((file) => file.id !== id),
-        });
+            this.setState({
+                uploadedFiles: this.state.uploadedFiles.filter((file) => file.id !== id),
+            });
+        } catch (error) {
+            console.error("Erro ao deletar arquivo:", error);
+            // TODO: Adicionar feedback visual para o usuário sobre o erro.
+        }
     };
 
     componentWillUnmount() {
@@ -146,7 +167,10 @@ class UploadFiles extends Component {
                     {!!uploadedFiles.length && (
                         <FileList
                             files={uploadedFiles}
-                            viewOnly={this.props.doNotDelete} //permitir excluir
+                            // A prop 'doNotDelete' do UploadFiles controla se o FileList permite deletar.
+                            // Se UploadFiles.doNotDelete for true, FileList.viewOnly se torna true,
+                            // o que significa que o botão de deletar será ocultado.
+                            viewOnly={this.props.doNotDelete}
                             onDelete={this.handleDelete}
                         />
                     )}

@@ -43,3 +43,44 @@
   color: #9ca3af;
   text-align: center;
 }
+/* src/styles/textStyles.css */
+
+/* Estilos para títulos principais do formulário */
+.form-title {
+    font-size: 2.2em; /* Exemplo: tamanho maior */
+    font-weight: 700; /* Exemplo: negrito */
+    color: #333; /* Exemplo: cor de texto */
+    margin-bottom: 20px;
+}
+
+/* Utilitário para centralizar texto */
+.text-center {
+    text-align: center;
+}
+
+/* Estilos para títulos de seções dentro do formulário */
+.section-title {
+    font-size: 1.5em;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee; /* Exemplo: uma linha abaixo do título */
+    padding-bottom: 5px;
+}
+
+/* Estilos para textos de dica ou observação do mapa */
+.map-hint-text {
+    font-size: 0.9em;
+    color: #777;
+    font-style: italic;
+    margin-top: 10px;
+}
+
+/* Exemplo de estilo para texto dentro de cards */
+.card-text {
+    font-size: 1em;
+    line-height: 1.5;
+    color: #444;
+}
+
+/* Você pode adicionar mais estilos de texto aqui, como para labels, erros, etc. */

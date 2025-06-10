@@ -10,6 +10,7 @@ import TopBar from '../components/UI/TopBar';
 import Footer from '../components/UI/Footer';
 import KanbanCard from '../components/Features/Cards/KanbanCard';
 import api from '../services/api';
+import SelectUpload from '../components/Features/Upload/SelectUpload';
 export default function HomeTest(props) {
 
   const [contracts, setContracts] = useState([]);
@@ -53,23 +54,25 @@ export default function HomeTest(props) {
 
         </div>
         <hr />
-        {contracts.length >0 && <TableComp
+        {contracts.length > 0 && <TableComp
           items={contracts}
           objkeys={{ contractNumber: '', name: '', value: '', status: '' }}
           tableHead={['Número', 'Nome', 'Valor', 'Status']}
           addItem={handleAdd}
           whatToSearch="Contratos"
           WhenClicked={(id) => navigate(`/${id}`)}
-        />} 
+        />}
         <hr />
-        <UploadFiles
 
-          projectId={props.user._id}
+        <SelectUpload
+          contractId={props.user._id}
           cardId={props.user._id}
           savedFile={handleFileSaved}
           deletado={handleFileDeleted}
           doNotDelete={false} // ou true se quiser modo somente leitura
         />
+
+
         <hr />
         <ShowLogs title={`Logs do usuário ${props.user.username}`} docId={props.user._id} />
         <hr />

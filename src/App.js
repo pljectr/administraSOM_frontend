@@ -7,7 +7,7 @@ import Axios from "axios";
 import HomeTest from "./pages/HomeTest";
 import Matriz from './pages/Matriz'
 import Login from "./pages/Login";
-import NewContractForm from './pages/NewContractForm';
+import NewContractForm from './pages/Forms/NewContractForm';
 export default function App() {
   const [auth, setAuth] = useState({
     status: false,
