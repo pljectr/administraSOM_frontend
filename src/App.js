@@ -8,6 +8,8 @@ import HomeTest from "./pages/HomeTest";
 import Matriz from './pages/Matriz'
 import Login from "./pages/Login";
 import NewContractForm from './pages/Forms/NewContractForm';
+import TopBar from './components/UI/TopBar';
+import Panel from './components/Features/Kanban/Panel'
 export default function App() {
   const [auth, setAuth] = useState({
     status: false,
@@ -34,11 +36,13 @@ export default function App() {
   return <BrowserRouter>
     <div className="App">
       <header className="App-header">
+        {auth.status && <div style={{ height: '55px' }} ><TopBar /></div>}
         <Matriz>
           <Routes>
-           {auth.status && <Route path="/" exact element={<HomeTest user={auth.user} /> }/>    } 
+            {auth.status && <Route path="/" exact element={<HomeTest user={auth.user} />} />}
             <Route path="/successTest" exact element={<HomeTest user={auth.user} />} />
             <Route path="/contracts/new" element={<NewContractForm />} />
+            <Route path="/:idContract" exact element={<Panel user={auth.user} />} />
             {/*  {auth.status && <Route path="/cadastros/empresas/:thenewobject" exact element={<Empresas user={auth.user} />} />} */}
             <Route path="/login" exact element={<Login />} />
 

@@ -3,12 +3,10 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 import ShowLogs from '../components/UI/ShowLogs';
 import AllFacilitiesMap from '../components/Features/Maps/AllFacilitiesMap';
-import UploadFiles from '../components/Features/Upload/uploadFiles';
 import "../utils/styles/stylesCSS.css"
 import TableComp from '../components/Features/Table/TableComp'
-import TopBar from '../components/UI/TopBar';
 import Footer from '../components/UI/Footer';
-import KanbanCard from '../components/Features/Cards/KanbanCard';
+
 import api from '../services/api';
 import SelectUpload from '../components/Features/Upload/SelectUpload';
 export default function HomeTest(props) {
@@ -36,7 +34,6 @@ export default function HomeTest(props) {
 
   return (
     <div className="App">
-      <TopBar />
 
       <header className="App-header">
 
@@ -77,7 +74,7 @@ export default function HomeTest(props) {
         <ShowLogs title={`Logs do usuário ${props.user.username}`} docId={props.user._id} />
         <hr />
 
-        <KanbanCard />
+
         <hr />
       </header>
 
