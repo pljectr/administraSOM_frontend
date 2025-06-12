@@ -57,7 +57,7 @@ export default function HomeTest(props) {
           tableHead={['Número', 'Nome', 'Valor', 'Status']}
           addItem={handleAdd}
           whatToSearch="Contratos"
-          WhenClicked={(id) => navigate(`/${id}`)}
+          WhenClicked={(id) => navigate(`/contracts/${id}`)}
         />}
         <hr />
 

@@ -1,7 +1,7 @@
 // src/pages/ContractDetailsPage.jsx
 
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Lanes from './Lanes';
 import api from '../../../services/api';
 import {
@@ -23,6 +23,7 @@ const availableStages = [
 ];
 
 export default function ContractDetailsPage(props) {
+    const navigate = useNavigate();
     const { idContract } = useParams();
     // Você não precisa mais de `contractCards` aqui, pois `Lanes` buscará seus próprios dados.
     // const [contractCards, setContractCards] = useState([]);
@@ -81,7 +82,15 @@ export default function ContractDetailsPage(props) {
 
     return (
         <Box sx={{ p: 3 }}>
+            <button onClick={() => {
+                navigate(`/contracts/${idContract}/edit`);
+                window.location.reload();
+            }}>
+                Editar
+            </button>
+            <br />
             <Typography variant="h4" gutterBottom>Gerenciamento do Contrato: {idContract}</Typography>
+
 
             {/* Seletor de Lane (Tipo de Card) */}
             <FormControl fullWidth sx={{ mb: 4 }}>
@@ -114,6 +123,7 @@ export default function ContractDetailsPage(props) {
                     <Typography variant="h5" color="text.secondary">
                         Por favor, selecione um tipo de processo acima para visualizar o Kanban.
                     </Typography>
+
                 </Box>
             )}
         </Box>

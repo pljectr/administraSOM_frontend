@@ -1,7 +1,7 @@
 // src/pages/Contracts/NewContractForm.jsx (Extensivamente Modificado para Layout)
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom'; // <--- ADICIONE 'useParams' AQUI
 // Corrigindo paths de importação
 import api from '../../services/api';
 import AllFacilitiesMap from '../../components/Features/Maps/AllFacilitiesMap';
@@ -9,19 +9,7 @@ import WaitAction from '../../components/UI/WaitAction'; // Caminho alterado par
 import { currencyNumber } from '../../utils/funtions/functions'; // Caminho alterado e 'funtions' conforme fornecido
 
 import {
-    Paper,
-    Stack,
-    TextField,
-    Button,
-    Autocomplete,
-    Container,
-    Typography,
-    Grid,
-    FormControlLabel,
-    Checkbox,
-    MenuItem,
-    Select,
-    InputLabel,
+    Paper, Stack, TextField, CircularProgress, Alert, Button, Autocomplete, Container, Typography, Grid, FormControlLabel, Checkbox, MenuItem, Select, InputLabel,
     FormControl,
     IconButton,
     Box, // Adicionado para auxiliar no layout flex
@@ -31,23 +19,24 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import { red } from '@mui/material/colors';
 
 export default function NewContractForm() {
+
     const navigate = useNavigate();
+    const { id } = useParams(); // <--- OBTENHA O ID DA URL AQUI
+    const isEditMode = !!id; // <--- FLAG PARA SABER SE ESTAMOS EM MODO DE EDIÇÃO
+
     const [facilities, setFacilities] = useState([]);
     const [users, setUsers] = useState([]);
     const [ne, setNe] = useState(false);
     // omId controla a OM selecionada para o mapa E para o contrato
     const [omId, setOmId] = useState(null);
 
-    const [form, setForm] = useState({
-        number: '',
-        year: '',
-        name: '',
-        opusNumber: '',
-        milLigName: '',
-        milLigNumber: '',
-        referenceNumber: '',
-        description: '',
-        administrativeExpirationDate: '',
+    // NOVOS ESTADOS PARA CARREGAMENTO E ERROS DE BUSCA (diferente dos de submissão)
+    const [isLoadingContract, setIsLoadingContract] = useState(isEditMode); // <--- TRUE se for modo de edição, pois vamos carregar dados
+    const [fetchError, setFetchError] = useState(null); // <--- Para erros ao carregar o contrato
+
+
+    let formZero = {
+        number: '', year: '', name: '', opusNumber: '', milLigName: '', milLigNumber: '', referenceNumber: '', description: '', administrativeExpirationDate: '',
         value: 0, // Inicializado como número
         fiscal: '',
         company: {
@@ -55,13 +44,9 @@ export default function NewContractForm() {
             name: '',
             address: '',
             observations: ''
-        },
-        desonerado: false,
-        bdiService: 0,
-        bdiEquipment: 0,
-        baseSheetUrl: '',
-        status: 'Ativo'
-    });
+        }, desonerado: false, bdiService: 0, bdiEquipment: 0, baseSheetUrl: '', status: 'Ativo'
+    }
+    const [form, setForm] = useState(formZero);
 
     const [displayedContractValue, setDisplayedContractValue] = useState('');
     const [scheduleItems, setScheduleItems] = useState([{ month: '', percentage: '' }]);
@@ -74,8 +59,9 @@ export default function NewContractForm() {
         setDisplayedContractValue(currencyNumber(form.value));
     }, [form.value]);
 
-    // Efeito para carregar facilities e users
+    // Efeito para carregar facilities, users E DADOS DO CONTRATO (se for edição)
     useEffect(() => {
+        // Carregar facilities e users (sempre)
         api.get('/api/facilities')
             .then(res => setFacilities(res.data))
             .catch(err => console.error('Erro ao carregar facilities:', err));
@@ -83,7 +69,75 @@ export default function NewContractForm() {
         api.get('/api/users')
             .then(res => setUsers(res.data))
             .catch(err => console.error('Erro ao carregar usuários:', err));
-    }, []);
+
+        // Lógica para carregar dados do contrato se estiver em modo de edição
+        if (isEditMode) {
+
+            setIsLoadingContract(true); // Ativa o loading
+            setFetchError(null); // Limpa erros anteriores
+            api.get(`/api/contracts/${id}`) // <--- Requisição para buscar o contrato
+                .then(res => {
+                    // Mapeia os dados recebidos para o formato do seu estado `form`
+                    const contractData = res.data;
+                    setForm({
+                        number: contractData.contractNumber ? contractData.contractNumber.match(/\d+/)?.at(0) || '' : '', // Extrai o número do contrato
+                        year: contractData.contractNumber ? contractData.contractNumber.match(/\d+$/)?.[0] || '' : '', // Extrai o ano do contrato
+                        name: contractData.name || '',
+                        opusNumber: contractData.opusNumber || '',
+                        milLigName: contractData.milLigName || '',
+                        milLigNumber: contractData.milLigNumber || '',
+                        referenceNumber: contractData.referenceNumber || '',
+                        description: contractData.description || '',
+                        // Formato de data 'YYYY-MM-DD' para input type="date"
+                        administrativeExpirationDate: contractData.administrativeExpirationDate ? new Date(contractData.administrativeExpirationDate).toISOString().split('T')[0] : '',
+                        value: contractData.value || 0,
+                        fiscal: contractData.fiscal?._id || '', // Assume que você quer o ID do fiscal
+                        company: {
+                            cnpj: contractData.company?.cnpj || '',
+                            name: contractData.company?.name || '',
+                            address: contractData.company?.address || '',
+                            observations: contractData.company?.observations || ''
+                        },
+                        desonerado: contractData.desonerado || false,
+                        bdiService: contractData.bdi?.servicePercent || 0,
+                        bdiEquipment: contractData.bdi?.equipmentPercent || 0,
+                        baseSheetUrl: contractData.baseSheetUrl || '',
+                        status: contractData.status || 'Ativo'
+                    });
+                    setOmId(contractData.om?._id || null); // Define o omId se o contrato tiver
+                    setNe(contractData.contractNumber?.includes('NE') || false); // Define NE se o contrato tiver 'NE' no número
+                    // Adapte o `scheduleItems` se você também o carrega para edição
+                    if (contractData.schedules && contractData.schedules.length > 0) {
+                        const latestSchedule = contractData.schedules[contractData.schedules.length - 1];
+                        if (latestSchedule.schedule && latestSchedule.schedule.length > 0) {
+                            setScheduleItems(latestSchedule.schedule.map(item => ({
+                                month: item.month ? new Date(item.month).toISOString().substring(0, 7) : '', // 'YYYY-MM'
+                                percentage: item.percentage || 0
+                            })));
+                        }
+                    } else {
+                        setScheduleItems([{ month: '', percentage: '' }]); // Garante um item padrão
+                    }
+                })
+                .catch(err => {
+                    console.error('Erro ao carregar contrato:', err);
+                    setFetchError(err.response?.data?.mensagem || 'Não foi possível carregar os dados do contrato para edição.');
+                })
+                .finally(() => {
+                    setIsLoadingContract(false); // Desativa o loading, independente do sucesso/erro
+                });
+        } else {
+
+            // Limpa o formulário se estiver em modo de criação
+            setForm(formZero);
+            setOmId(null);
+            setNe(false);
+            setScheduleItems([{ month: '', percentage: '' }]);
+            setIsLoadingContract(false); // Já que não precisa carregar nada em modo de criação
+        }
+    }, [id, isEditMode]); // <--- Dependências para o useEffect
+
+    // ... restante do seu código
 
     // Funções para gerenciar as linhas do cronograma
     const handleAddScheduleItem = () => {
@@ -116,8 +170,11 @@ export default function NewContractForm() {
         setSubmitError(null);
 
         // Prepara o array de cronograma para o backend
+        // ATENÇÃO: Para edição, você pode querer adicionar uma NOVA versão ao invés de sobrescrever
+        // O backend que você compartilhou já aceita um array de schedules, então você pode adicionar
+        // a nova versão aqui ou enviar apenas a última versão editada.
         const contractSchedules = [{
-            versionDate: new Date(), // Data da criação da versão do cronograma
+            versionDate: new Date(),
             schedule: scheduleItems.map(item => ({
                 month: item.month ? new Date(item.month + '-01T00:00:00Z') : null,
                 percentage: Number(item.percentage) || 0,
@@ -129,23 +186,35 @@ export default function NewContractForm() {
         const payload = {
             ...form,
             contractNumber,
-            om: omId, // Adiciona o omId ao payload
+            om: omId,
             company: form.company,
             bdi: {
                 servicePercent: Number(form.bdiService) || 0,
                 equipmentPercent: Number(form.bdiEquipment) || 0
             },
-            schedules: contractSchedules,
+            schedules: contractSchedules, // Envia o cronograma preparado
+            administrativeExpirationDate: form.administrativeExpirationDate || null, // Garante que a data seja enviada
         };
 
-        api.post('/api/contracts', payload)
+        // Lógica CONDICIONAL para criação (POST) ou atualização (PUT)
+        const requestPromise = isEditMode
+            ? api.put(`/api/contracts/${id}`, payload) // <--- Requisição PUT para atualização
+            : api.post('/api/contracts', payload); // <--- Requisição POST para criação
+
+        requestPromise
             .then(() => {
                 setIsSubmitting(false);
-                navigate('/');
+                if (isEditMode) {
+                    // Redireciona após atualização
+                    navigate(`/contracts/${id}`); // Ou para a lista de contratos
+                } else {
+                    // Redireciona após criação
+                    navigate('/'); // Para a dashboard principal
+                }
             })
             .catch(err => {
                 setIsSubmitting(false);
-                console.error('Erro ao criar contrato:', err);
+                console.error('Erro ao salvar contrato:', err);
                 const errorMessage = err.response?.data?.mensagem || 'Erro desconhecido ao salvar o contrato.';
                 setSubmitError(errorMessage);
             });
@@ -162,12 +231,12 @@ export default function NewContractForm() {
 
     return (
         <Container maxWidth="lg" sx={{ mt: 4 }} className="form-container"> {/* Container maior */}
-            <Paper sx={{ p: 4 }} elevation={3} className="main-form-paper">
+            {!isLoadingContract && <Paper sx={{ p: 4 }} elevation={3} className="main-form-paper">
                 <Typography variant="h4" gutterBottom className="form-title text-center">
                     Cadastro de Contrato
 
                 </Typography>
-                
+
 
                 {/* PRIMEIRA STACK: MAPA (30%) e INFORMAÇÕES GERAIS (70%) */}
                 {/* Agora, o Paper 'general-info-card' é o container flex para ambos */}
@@ -182,11 +251,7 @@ export default function NewContractForm() {
                         }}
                     >
                         <Paper id="OMs" sx={{
-                            p: 2,
-                            width: '300px',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            minHeight: '100%'
+                            p: 2, width: '300px', display: 'flex', flexDirection: 'column', minHeight: '100%'
                         }}>
                             <Stack
                                 direction="column"
@@ -218,10 +283,7 @@ export default function NewContractForm() {
 
                         </Paper>
                         <Paper id="Infos" sx={{
-                            width: '100%',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            minHeight: '100%'
+                            width: '100%', display: 'flex', flexDirection: 'column', minHeight: '100%'
                         }}>
                             <Grid item xs={12} md={8} sx={{ display: 'flex' }} className="general-info-section"> {/* display: flex para o item */}
                                 <Paper sx={{ p: 3, flexGrow: 1 }} elevation={1} className="general-info-card"> {/* flexGrow: 1 para o Paper */}
@@ -393,6 +455,8 @@ export default function NewContractForm() {
                             fullWidth
                             value={form.baseSheetUrl}
                             onChange={e => setForm({ ...form, baseSheetUrl: e.target.value })}
+                            disabled={isEditMode} // <--- ADICIONE ESTA LINHA
+                            helperText={isEditMode ? "A URL da planilha base não pode ser alterada em contratos existentes." : ""} // <--- OPCIONAL: Mensagem de ajuda
                         />
                     </Stack>
                 </Paper>
@@ -455,7 +519,8 @@ export default function NewContractForm() {
                     </Typography>
                     <br />
 
-                    <Stack
+
+                    {form.company && <Stack
                         direction="column"
                         spacing={2}
                         sx={{
@@ -467,8 +532,7 @@ export default function NewContractForm() {
                         <TextField label="CNPJ Empresa" fullWidth value={form.company.cnpj} onChange={e => setForm({ ...form, company: { ...form.company, cnpj: e.target.value } })} />
                         <TextField label="Endereço da Empresa" fullWidth value={form.company.address} onChange={e => setForm({ ...form, company: { ...form.company, address: e.target.value } })} />
                         <TextField label="Observações da Empresa" fullWidth multiline rows={2} value={form.company.observations} onChange={e => setForm({ ...form, company: { ...form.company, observations: e.target.value } })} />
-                    </Stack>
-
+                    </Stack>}
 
                 </Paper>
 
@@ -493,10 +557,13 @@ export default function NewContractForm() {
                         </Button>
                     </Grid>
                 </Grid>
-            </Paper>
+            </Paper>}
 
             {isSubmitting && (
                 <WaitAction erro={false} ErrMsg="" onClose={() => { }} />
+            )}
+            {isLoadingContract && (
+                <WaitAction erro={false} ErrMsg="Aguarde Carregamento de informações do Contrato" onClose={() => { }} />
             )}
 
             {submitError && (
