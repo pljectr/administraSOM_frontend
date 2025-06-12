@@ -541,7 +541,7 @@ export default function NewContractForm() {
                     <Grid item>
                         <Button
                             variant="outlined"
-                            onClick={() => navigate(-1)}
+                            onClick={() => { navigate(-1); }}
                             disabled={isSubmitting}
                         >
                             Cancelar

@@ -1,11 +1,13 @@
+//Kanban/Panel.jsx
+
 // src/pages/ContractDetailsPage.jsx
 
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Lanes from './Lanes';
 import api from '../../../services/api';
 import {
-    Box, CircularProgress, Alert, AlertTitle, Typography, Container,
+    Box, Paper, Stack, CircularProgress, Alert, AlertTitle, Typography, Container,
     FormControl, InputLabel, Select, MenuItem // Adicionados para o seletor de lane
 } from '@mui/material';
 
@@ -19,11 +21,10 @@ const availableCardTypes = [
 ];
 
 const availableStages = [
-    "A fazer", "Em andamento", "Em análise", "Concluído"
+    "A fazer", "Em andamento", "Em análise", "Concluído",
 ];
 
 export default function ContractDetailsPage(props) {
-    const navigate = useNavigate();
     const { idContract } = useParams();
     // Você não precisa mais de `contractCards` aqui, pois `Lanes` buscará seus próprios dados.
     // const [contractCards, setContractCards] = useState([]);
@@ -82,33 +83,48 @@ export default function ContractDetailsPage(props) {
 
     return (
         <Box sx={{ p: 3 }}>
-            <button onClick={() => {
-                navigate(`/contracts/${idContract}/edit`);
-                window.location.reload();
-            }}>
-                Editar
-            </button>
-            <br />
             <Typography variant="h4" gutterBottom>Gerenciamento do Contrato: {idContract}</Typography>
 
-
             {/* Seletor de Lane (Tipo de Card) */}
-            <FormControl fullWidth sx={{ mb: 4 }}>
-                <InputLabel id="select-lane-label">Selecione o Tipo de Processo (Lane)</InputLabel>
-                <Select
-                    labelId="select-lane-label"
-                    id="select-lane"
-                    value={selectedLane}
-                    label="Selecione o Tipo de Processo (Lane)"
-                    onChange={handleLaneChange}
+            <Stack
+                id={'empilhar_cabecalho_e_kanban'}
+                direction="column"
+                spacing={1}
+                sx={{
+                    maxHeight: '70vh',
+                    // Garante que o Paper das colunas respeite a altura e se alinhe
+                    height: 'auto', // Permite que o Stack se ajuste ao conteúdo, mas as colunas terão max-height
+                    width: '70vw', // Usa a largura total do pai
+                    alignItems: "flex-start", // Alinha os itens à esquerda
+                }}
+
+            >
+
+                <Paper
+                    sx={{
+                        p: 2,
+                        width: '95%',
+                    }}
                 >
-                    {availableCardTypes.map((laneType) => (
-                        <MenuItem key={laneType} value={laneType}>
-                            {laneType}
-                        </MenuItem>
-                    ))}
-                </Select>
-            </FormControl>
+                    <FormControl fullWidth sx={{ mb: 4 }}>
+                        <InputLabel id="select-lane-label">Selecione o Tipo de Processo (Lane)</InputLabel>
+                        <Select
+                            labelId="select-lane-label"
+                            id="select-lane"
+                            value={selectedLane}
+                            label="Selecione o Tipo de Processo (Lane)"
+                            onChange={handleLaneChange}
+                        >
+                            {availableCardTypes.map((laneType) => (
+                                <MenuItem key={laneType} value={laneType}>
+                                    {laneType}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Paper>
+            </Stack>
+            <br />
 
             {/* Renderiza o componente Lanes somente se uma lane for selecionada */}
             {selectedLane ? (
@@ -123,7 +139,6 @@ export default function ContractDetailsPage(props) {
                     <Typography variant="h5" color="text.secondary">
                         Por favor, selecione um tipo de processo acima para visualizar o Kanban.
                     </Typography>
-
                 </Box>
             )}
         </Box>
